@@ -1,5 +1,5 @@
 package com.cos.blog.repository;
 
-public class CommentRepository {
+public interface CommentRepository {
 
 }
