@@ -5,7 +5,7 @@
 <mapper namespace="com.cos.blog.repository.CommentRepository">
 
 	<select id="findAll"
-		resultType="com.cos.blog.model.Comment">
+		resultType="com.cos.blog.model.comment.Comment">
 		select * from comment order by id desc
 	</select>
 

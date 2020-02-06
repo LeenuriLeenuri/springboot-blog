@@ -39,7 +39,7 @@ USE blog;
 
 CREATE TABLE user(
 	id int auto_increment primary key,
-    username varchar(100) not null,
+    username varchar(100) unique not null,
     password varchar(100) not null,
     email varchar(100),
     profile varchar(200),
@@ -56,6 +56,7 @@ CREATE TABLE post(
     content longtext,
     userId int,
     createDate timestamp,
+									-- 아이디 삭제해도 글 남아 있게 함
     foreign key (userId) references user (id) on delete set null
 ) engine=InnoDB default charset=utf8;
 
@@ -70,6 +71,7 @@ CREATE TABLE comment(
     content varchar(300) not null,
     createDate timestamp,
     foreign key (userId) references user (id) on delete set null,
+									-- 아이디 삭제하면 글 없어지게 함
     foreign key (postId) references post (id) on delete cascade
 ) engine=InnoDB default charset=utf8;
 

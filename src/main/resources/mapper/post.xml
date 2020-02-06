@@ -5,7 +5,7 @@
 <mapper namespace="com.cos.blog.repository.PostRepository">
 
 	<select id="findAll"
-		resultType="com.cos.blog.model.Post">
+		resultType="com.cos.blog.model.post.Post">
 		select * from post order by id desc
 	</select>
 
