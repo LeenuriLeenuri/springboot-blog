@@ -2,9 +2,12 @@ package com.cos.blog.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import com.cos.blog.aop.SessionIntercepter;
 
 // Configuration 쓰면 IoC 해준다.
 // WebMvcConfigurer는 web.xml처럼 쓰게 해준다.
@@ -26,7 +29,20 @@ public class WebConfig implements WebMvcConfigurer {
 		// 3600초 = 1시간
 		.setCachePeriod(3600)
 		.resourceChain(true)
-		.addResolver(new PathResourceResolver());
+		.addResolver(new PathResourceResolver());	
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new SessionIntercepter())
+		.addPathPatterns("/user/profile/**")
+		.addPathPatterns("/post/write/**")
+		.addPathPatterns("/post/update/**")
+		.addPathPatterns("/post/delete/**");
+		
+		// add, excludePattern() 제외시킬때 사용
+		// .excludePathPatterns("/post");
+		
 		
 	}
 }

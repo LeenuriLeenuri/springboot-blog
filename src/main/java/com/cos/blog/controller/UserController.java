@@ -31,7 +31,7 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private HttpSession session;
 
@@ -45,30 +45,26 @@ public class UserController {
 	public String login() {
 		return "/user/login";
 	}
-	
+
 	@GetMapping("/user/logout")
 	public String logout() {
 		session.invalidate();
-		// redirect:/는 location.href와 같다.(함수를 때리는 거다!!, 데이터 들고 감, PostController에 있는 메인주소로 들어가는 방법이다.)
+		// redirect:/는 location.href와 같다.(함수를 때리는 거다!!, 데이터 들고 감, PostController에 있는
+		// 메인주소로 들어가는 방법이다.)
 		return "redirect:/";
 	}
 
 	// 인증 체크, 동일인 체크 필요
 	@GetMapping("/user/profile/{id}")
 	public String profile(@PathVariable int id) {
-		
+
 		User principal = (User) session.getAttribute("principal");
-		
-		if(principal != null) {
-			if(principal.getId() == id) {
-				return "/user/profile";
-			}else {
-				// 잘못된 접근입니다. 권한이 없습니다.
-				// 메시지 띄우고 싶으면 PrintWrite걸고 out 쓰면 된다. return은 null
-				return "/user/login";
-			}
-		}else {
-			// 인증되지 않은 사용자 입니다. 로그인 해주십시오.
+
+		if (principal.getId() == id) {
+			return "/user/profile";
+		} else {
+			// 잘못된 접근입니다. 권한이 없습니다.
+			// 메시지 띄우고 싶으면 PrintWrite걸고 out 쓰면 된다. return은 null
 			return "/user/login";
 		}
 	}
@@ -108,19 +104,19 @@ public class UserController {
 	@PostMapping("/user/login")
 	public ResponseEntity<?> login(@Valid @RequestBody ReqLoginDto dto, BindingResult bindingResult) {
 		System.out.println("로그인 컨트롤러까지 진입");
-		
+
 		// request 검증 = AOP로 처리
-		
+
 		// 서비스 호출
 		// principal: 접근 인증된 주체
 		User principal = userService.로그인(dto);
 		System.out.println("로그인 서비스 들어갔다가 나옴");
-		
-		if(principal != null) {
+
+		if (principal != null) {
 			session.setAttribute("principal", principal);
 			System.out.println("로그인 진입 - ok");
 			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);
-		}else {
+		} else {
 			System.out.println("로그인 진입 - fail");
 			return new ResponseEntity<RespCM>(new RespCM(400, "fail"), HttpStatus.BAD_REQUEST);
 		}

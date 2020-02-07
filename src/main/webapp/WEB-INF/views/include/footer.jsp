@@ -4,8 +4,8 @@
 
 <div class="jumbotron text-center" style="margin-bottom: 0">
 	<p>Created By 💎Nul</p>
-	<p>전화번호: 010-1234-5678</p>
-	<p>주소: 010-1234-5678</p>
+	<p>💌 qwerty@gmail.com</p>
+	<p>🏰  010-1234-5678</p>
 </div>
 
 </body>
