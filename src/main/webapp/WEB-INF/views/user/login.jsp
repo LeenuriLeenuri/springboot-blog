@@ -15,23 +15,57 @@
 
 		<form>
 			<div class="form-group">
-				<label for="uname">Username:</label> <input type="text" class="form-control" id="username" placeholder="Enter username" name="uname" />
+				<label for="username">Username:</label> <input type="text" class="form-control" id="username" placeholder="Enter username" />
 				<div class="valid-feedback">Valid.</div>
 				<div class="invalid-feedback">Please fill out this field.</div>
 			</div>
 
 			<div class="form-group">
-				<label for="pwd">Password:</label> <input type="password" class="form-control" id="password" placeholder="Enter password" name="pswd" />
+				<label for="password">Password:</label> <input type="password" class="form-control" id="password" placeholder="Enter password" />
 				<div class="valid-feedback">Valid.</div>
 				<div class="invalid-feedback">Please fill out this field.</div>
 			</div>
 		</form>
-		
+
 		<button id="login--submit" class="btn btn-danger">로그인</button>
-		
+
 	</div>
 
 </div>
 
+<script>
+	$('#login--submit').on('click', function(e) {
+		//e.preventDefault();
+		var data = {
+			username : $('#username').val(),
+			password : $('#password').val(),
+		};
+
+		$.ajax({
+			type : 'POST',
+			url : '/user/login',
+			data : JSON.stringify(data),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json'
+		}).done(function(r, XMLHttpRequest, textStatus) {
+			alert("로그인 성공");
+			console.log(r);
+			location.href = "/";
+
+			console.log('XMLHttpRequest: ' + XMLHttpRequest);
+			console.log('XMLHttpRequest: ' + XMLHttpRequest.status);
+			console.log('textStatus: ' + textStatus);
+			console.log('textStatus: ' + textStatus.status);
+		}).fail(function(r, XMLHttpRequest, textStatus) {
+			alert("로그인 실패");
+			console.log(r);
+
+			console.log('XMLHttpRequest: ' + XMLHttpRequest);
+			console.log('XMLHttpRequest: ' + XMLHttpRequest.status);
+			console.log('textStatus: ' + textStatus);
+			console.log('textStatus: ' + textStatus.status);
+		});
+	});
+</script>
 
 <%@include file="../include/footer.jsp"%>

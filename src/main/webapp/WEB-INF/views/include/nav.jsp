@@ -24,8 +24,24 @@
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
 				<!-- 둘다 GET 방식, JOIN은 Proc 만들기 싫으면 POST로 보내기  -->
-				<li class="nav-item"><a class="nav-link" href="/user/join">회원가입</a></li>
-				<li class="nav-item"><a class="nav-link" href="/user/login">로그인</a></li>
+				
+				<c:choose>
+					<c:when test="${not empty sessionScope.principal}">
+						<li class="nav-item"><a class="nav-link" href="/post/write">글 쓰기</a></li>
+
+						<li class="nav-item"><a class="nav-link" href="/user/profile/${sessionScope.principal.id}">회원정보 수정</a></li>
+						
+						<li class="nav-item"><a class="nav-link" href="/user/logout">로그아웃</a></li>
+
+					</c:when>
+
+					<c:otherwise>
+						<li class="nav-item"><a class="nav-link" href="/user/join">회원가입</a></li>
+
+						<li class="nav-item"><a class="nav-link" href="/user/login">로그인</a></li>
+					</c:otherwise>
+				</c:choose>
+				
 			</ul>
 		</div>
 	</nav>
