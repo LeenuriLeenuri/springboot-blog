@@ -6,30 +6,23 @@
 <div class="container">
 
 	<div class="container">
-		<h2>Form Validation</h2>
-		<p>
-			In this example, we use
-			<code>.was-validated</code>
-			to indicate what's missing before submitting the form:
-		</p>
+		<h2>Join</h2>
+		<hr/>
 
 		<form>
 			<div class="form-group">
-				<label for="username">Username:</label> <input type="text" class="form-control" id="username" placeholder="Enter username" maxlength="20" />
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="username">Username: </label>
+				<input type="text" class="form-control" id="username" placeholder="Enter username" maxlength="20" />
 			</div>
 
 			<div class="form-group">
-				<label for="password">Password:</label> <input type="password" class="form-control" id="password" placeholder="Enter password" maxlength="20" />
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="password">Password: </label>
+				<input type="password" class="form-control" id="password" placeholder="Enter password" maxlength="20" />
 			</div>
 
 			<div class="form-group">
-				<label for="email">Email:</label> <input type="email" class="form-control" id="email" placeholder="Enter email" maxlength="50" />
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="email">Email: </label>
+				<input type="email" class="form-control" id="email" placeholder="Enter email" maxlength="50" />
 			</div>
 		</form>
 

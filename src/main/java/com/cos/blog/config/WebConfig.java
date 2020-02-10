@@ -42,7 +42,5 @@ public class WebConfig implements WebMvcConfigurer {
 		
 		// add, excludePattern() 제외시킬때 사용
 		// .excludePathPatterns("/post");
-		
-		
 	}
 }

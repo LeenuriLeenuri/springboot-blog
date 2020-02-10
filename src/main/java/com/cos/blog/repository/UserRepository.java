@@ -11,4 +11,8 @@ public interface UserRepository {
 	int findByUsername(String username);
 	// 유저네임과 비밀번호 찾아서 준 거
 	User findByUsernameAndPassword(ReqLoginDto dto);
+	
+	int update(int id, String password, String profile);
+	
+	User findById(int id);
 }

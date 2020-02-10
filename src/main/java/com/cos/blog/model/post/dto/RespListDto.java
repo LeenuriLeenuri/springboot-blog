@@ -1,25 +1,19 @@
-package com.cos.blog.model.post;
+package com.cos.blog.model.post.dto;
 
 import java.sql.Timestamp;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Post {
+@AllArgsConstructor
+public class RespListDto {
 	private int id;
 	private String title;
 	private String content;
 	private int userId;
 	private Timestamp createDate;
-	
-	@Builder
-	public Post(String title, String content, int userId) {
-		this.title = title;
-		this.content = content;
-		this.userId = userId;
-	}
-	
+	private String username;
 }

@@ -1,12 +1,18 @@
 package com.cos.blog.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +21,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cos.blog.model.RespCM;
 import com.cos.blog.model.ReturnCode;
@@ -28,6 +38,9 @@ import com.cos.blog.service.UserService;
 public class UserController {
 
 	private static final String TAG = "UserController: ";
+	
+	@Value("${file.path}")
+	private String fileRealPath;  // 서버에 배포하면 경로 변경해야함.
 
 	@Autowired
 	private UserService userService;
@@ -69,7 +82,7 @@ public class UserController {
 		}
 	}
 
-	// 메시지 컨버터는 request 받을 때 setter로 호출한다.
+	// 메시지 컨버터(Jackson Mapper)는 request 받을 때 setter로 호출한다.
 	@PostMapping("/user/join")
 	public ResponseEntity<?> join(@Valid @RequestBody ReqJoinDto dto, BindingResult bindingResult) {
 		System.out.println("진입2");
@@ -120,5 +133,42 @@ public class UserController {
 			System.out.println("로그인 진입 - fail");
 			return new ResponseEntity<RespCM>(new RespCM(400, "fail"), HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	// form:form 사용함!!
+	@PutMapping("/user/profile")
+	public @ResponseBody String profile(
+			@RequestParam int id, 
+			@RequestParam String password,
+			@RequestParam MultipartFile profile){
+		
+		UUID uuid = UUID.randomUUID();
+		String uuidFilename = uuid+"_"+profile.getOriginalFilename();
+		
+		// nio 객체!!
+		Path filePath = Paths.get(fileRealPath+uuidFilename);
+		try {
+			Files.write(filePath, profile.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		int result = userService.수정완료(id, password, uuidFilename);
+		
+		StringBuffer sb = new StringBuffer();
+		if(result == 1) {
+			sb.append("<script>");
+			sb.append("alert('수정완료');");
+			sb.append("location.href='/';");
+			sb.append("</script>");
+			return sb.toString();
+		}else {
+			sb.append("<script>");
+			sb.append("alert('수정실패');");
+			sb.append("history.back();");
+			sb.append("</script>");
+			return sb.toString();
+		}	
+
 	}
 }
