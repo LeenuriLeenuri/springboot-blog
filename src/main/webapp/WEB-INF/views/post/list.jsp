@@ -24,7 +24,7 @@
 					<td><a href="/post/detail/${post.id}">${post.title}</a></td>
 					<td>${post.username}</td>
 					<td>${post.createDate}</td>
-<%-- 					<td><fmt:formatDate value="${post.createDate}"pattern=" E요일 HH:mm" type="time" /></td> --%>
+					<%-- <td><fmt:formatDate value="${post.createDate}"pattern=" E요일 HH:mm" type="time" /></td> --%>
 				</tr>
 			</c:forEach>
 
