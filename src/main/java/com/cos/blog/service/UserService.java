@@ -1,8 +1,7 @@
 package com.cos.blog.service;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +16,9 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
-	private HttpSession session;
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@Transactional
 	public int 회원가입(ReqJoinDto dto) {
@@ -32,6 +31,10 @@ public class UserService {
 			if (result == 1) {
 				return ReturnCode.아이디중복;
 			} else {
+				// password 암호화하기
+				String encodePassword = passwordEncoder.encode(dto.getPassword());
+
+				dto.setPassword(encodePassword);
 				return userRepository.save(dto);
 			}
 
@@ -49,13 +52,15 @@ public class UserService {
 		return userRepository.findByUsernameAndPassword(dto);
 	}
 
-	public int 수정완료(int id, String password, String profile) {
+	public int 수정완료(int id, String password, String profile, User principal) {
 
-		int result = userRepository.update(id, password, profile);
+		String ecodePassword = passwordEncoder.encode(password);
+		int result = userRepository.update(id, ecodePassword, profile);
 
 		if (result == 1) { // 수정 성공
 			User user = userRepository.findById(id);
-			session.setAttribute("principal", user);
+			principal.setPassword(user.getPassword());
+			principal.setProfile(user.getProfile());
 
 			return 1;
 		} else { // 수정 실패

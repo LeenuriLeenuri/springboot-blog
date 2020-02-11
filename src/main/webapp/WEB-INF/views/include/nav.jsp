@@ -4,6 +4,13 @@
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<sec:authorize access="isAuthenticated()">
+    <sec:authentication property="principal" var="principal" />
+</sec:authorize>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,12 +42,12 @@
 				<!-- 둘다 GET 방식, JOIN은 Proc 만들기 싫으면 POST로 보내기  -->
 
 				<c:choose>
-					<c:when test="${not empty sessionScope.principal}">
+					<c:when test="${not empty principal}">
 						<li class="nav-item"><a class="nav-link" href="/post/write">글 쓰기</a></li>
 
-						<li class="nav-item"><a class="nav-link" href="/user/profile/${sessionScope.principal.id}">회원정보 수정</a></li>
+						<li class="nav-item"><a class="nav-link" href="/user/profile/${principal.id}">회원정보 수정</a></li>
 
-						<li class="nav-item"><a class="nav-link" href="/user/logout">로그아웃</a></li>
+						<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
 
 					</c:when>
 
@@ -54,7 +61,7 @@
 			</ul>
 			
 			<!-- 에러가 나서 사진에 엑박 뜨는 것을 방지하려고 onerror 타입 넣어줬다 -->
-			<img src="/media/${sessionScope.principal.profile}"  class="rounded-circle my__img ml-auto" 
+			<img src="/media/${principal.profile}"  class="rounded-circle my__img ml-auto" 
 			     width="30px" height="30px" onerror="javascript:this.src = '/images/unknown.jpg' " />
 			
 		</div>

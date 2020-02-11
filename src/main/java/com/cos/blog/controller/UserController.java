@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -31,7 +31,6 @@ import com.cos.blog.model.RespCM;
 import com.cos.blog.model.ReturnCode;
 import com.cos.blog.model.user.User;
 import com.cos.blog.model.user.dto.ReqJoinDto;
-import com.cos.blog.model.user.dto.ReqLoginDto;
 import com.cos.blog.service.UserService;
 
 @Controller
@@ -45,9 +44,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private HttpSession session;
-
 	@GetMapping("/user/join")
 	public String join() {
 		System.out.println("진입1");
@@ -59,20 +55,12 @@ public class UserController {
 		return "/user/login";
 	}
 
-	@GetMapping("/user/logout")
-	public String logout() {
-		session.invalidate();
-		// redirect:/는 location.href와 같다.(함수를 때리는 거다!!, 데이터 들고 감, PostController에 있는
-		// 메인주소로 들어가는 방법이다.)
-		return "redirect:/";
-	}
-
 	// 인증 체크, 동일인 체크 필요
 	@GetMapping("/user/profile/{id}")
-	public String profile(@PathVariable int id) {
+	public String profile(@PathVariable int id, @AuthenticationPrincipal User principal) {
 
-		User principal = (User) session.getAttribute("principal");
-
+		System.out.println("UserController : profile :  "+principal.getProfile());
+		
 		if (principal.getId() == id) {
 			return "/user/profile";
 		} else {
@@ -105,42 +93,43 @@ public class UserController {
 		System.out.println("1");
 		int result = userService.회원가입(dto);
 
-		if (result == -2) {
+		if (result == -ReturnCode.아이디중복) {
 			return new ResponseEntity<RespCM>(new RespCM(ReturnCode.아이디중복, "아이디중복"), HttpStatus.OK);
-		} else if (result == 1) {
+		} else if (result == ReturnCode.성공) {
 			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<RespCM>(new RespCM(500, "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@PostMapping("/user/login")
-	public ResponseEntity<?> login(@Valid @RequestBody ReqLoginDto dto, BindingResult bindingResult) {
-		System.out.println("로그인 컨트롤러까지 진입");
-
-		// request 검증 = AOP로 처리
-
-		// 서비스 호출
-		// principal: 접근 인증된 주체
-		User principal = userService.로그인(dto);
-		System.out.println("로그인 서비스 들어갔다가 나옴");
-
-		if (principal != null) {
-			session.setAttribute("principal", principal);
-			System.out.println("로그인 진입 - ok");
-			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);
-		} else {
-			System.out.println("로그인 진입 - fail");
-			return new ResponseEntity<RespCM>(new RespCM(400, "fail"), HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@PostMapping("/user/login")
+//	public ResponseEntity<?> login(@Valid @RequestBody ReqLoginDto dto, BindingResult bindingResult) {
+//		System.out.println("로그인 컨트롤러까지 진입");
+//
+//		// request 검증 = AOP로 처리
+//
+//		// 서비스 호출
+//		// principal: 접근 인증된 주체
+//		User principal = userService.로그인(dto);
+//		System.out.println("로그인 서비스 들어갔다가 나옴");
+//
+//		if (principal != null) {
+//			session.setAttribute("principal", principal);
+//			System.out.println("로그인 진입 - ok");
+//			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);
+//		} else {
+//			System.out.println("로그인 진입 - fail");
+//			return new ResponseEntity<RespCM>(new RespCM(400, "fail"), HttpStatus.BAD_REQUEST);
+//		}
+//	}
 	
 	// form:form 사용함!!
 	@PutMapping("/user/profile")
 	public @ResponseBody String profile(
 			@RequestParam int id, 
 			@RequestParam String password,
-			@RequestParam MultipartFile profile){
+			@RequestParam MultipartFile profile,
+			@AuthenticationPrincipal User principal){
 		
 		UUID uuid = UUID.randomUUID();
 		String uuidFilename = uuid+"_"+profile.getOriginalFilename();
@@ -153,7 +142,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		
-		int result = userService.수정완료(id, password, uuidFilename);
+		int result = userService.수정완료(id, password, uuidFilename, principal);
 		
 		StringBuffer sb = new StringBuffer();
 		if(result == 1) {

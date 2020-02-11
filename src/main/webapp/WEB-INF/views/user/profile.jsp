@@ -11,11 +11,11 @@
 
 		<form:form action="/user/profile" method="PUT" enctype="multipart/form-data">
 		
-		<input type="hidden" name="id" value="${sessionScope.principal.id}" />
+		<input type="hidden" name="id" value="${principal.id}" />
 		
 			<div class="form-group">
 				<label for="username">Username: </label>
-				<input type="text" class="form-control" placeholder="Enter Username" value="${sessionScope.principal.username}" readonly/>
+				<input type="text" class="form-control" placeholder="Enter Username" value="${principal.username}" readonly/>
 			</div>
 
 			<div class="form-group">
@@ -25,13 +25,13 @@
 
 			<div class="form-group">
 				<label for="email">Email: </label>
-				<input type="email" class="form-control" placeholder="Enter email"  value="${sessionScope.principal.email}" readonly/>
+				<input type="email" class="form-control" placeholder="Enter email"  value="${principal.email}" readonly/>
 			</div>
 
 			<div class="form-group">
 				<label for="profile">프로필 사진</label>
 				<input type="file" class="form-control" name="profile" />
-			<p class="my__profile">${sessionScope.principal.profile}</p>
+			<p class="my__profile">${principal.profile}</p>
 			</div>
 
 			<button id="update--submit" class="btn btn-danger">수정</button>
