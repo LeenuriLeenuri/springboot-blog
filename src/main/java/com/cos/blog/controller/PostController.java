@@ -86,9 +86,9 @@ public class PostController {
 	}
 	
 	@PutMapping("/post/update")
-	public ResponseEntity<?> update(@RequestBody ReqUpdateDto dto, @AuthenticationPrincipal User principal){
+	public ResponseEntity<?> update(@RequestBody ReqUpdateDto dto){
 		
-		int result = postService.수정완료(dto, principal);
+		int result = postService.수정완료(dto);
 		
 		if(result == 1) {
 			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);	
@@ -100,9 +100,9 @@ public class PostController {
 	}
 	
 	@DeleteMapping("/post/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable int id, @AuthenticationPrincipal User principal){
+	public ResponseEntity<?> delete(@PathVariable int id){
 		
-		int result = postService.삭제하기(id, principal);
+		int result = postService.삭제하기(id);
 		
 		if(result == 1) {
 			return new ResponseEntity<RespCM>(new RespCM(200, "ok"), HttpStatus.OK);	

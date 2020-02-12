@@ -3,6 +3,7 @@ package com.cos.blog.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.cos.blog.model.ReturnCode;
@@ -18,6 +19,9 @@ public class PostService {
 
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private MyUserDetailService userDetailService;
 	
 	public int 글쓰기(ReqWriteDto dto) {
 		return postRepository.save(dto);
@@ -43,9 +47,12 @@ public class PostService {
 		
 	}
 	
-	public int 수정완료(ReqUpdateDto dto, User principal) {
+	public int 수정완료(ReqUpdateDto dto) {
 
 		Post post = postRepository.findById(dto.getId());
+		
+		// 2. 직접 세션 객체 접근하여 가져오기
+		User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		if(principal.getId() == post.getUserId()) {
 			return postRepository.update(dto); // 1, 0, -1
@@ -55,10 +62,12 @@ public class PostService {
 	}
 	
 	
-	public int 삭제하기(int id, User principal) {
+	public int 삭제하기(int id) {
 		// 동일인 체크 session의 principal.id == 해당 post.id로 select한 userId값
 
 		Post post = postRepository.findById(id);
+		
+		User principal = userDetailService.getPrincipal();
 		
 		if(principal.getId() == post.getUserId()) {
 			return postRepository.delete(id);

@@ -14,11 +14,18 @@ public class MyUserDetailService implements UserDetailsService {
 
 	@Autowired
 	public UserRepository userRepository;
+	
+	private User user;
+	
+	public User getPrincipal() {
+		return user;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		System.out.println("MyUserDetailService까지 진입");
-		User user = userRepository.authentication(username);
+		
+		user = userRepository.authentication(username);
 
 		if (user == null) {
 			System.out.println("MyUserDetailService의 if까지 들어옴");

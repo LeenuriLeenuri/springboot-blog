@@ -16,6 +16,9 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private MyUserDetailService userDetailService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -52,8 +55,10 @@ public class UserService {
 		return userRepository.findByUsernameAndPassword(dto);
 	}
 
-	public int 수정완료(int id, String password, String profile, User principal) {
+	public int 수정완료(int id, String password, String profile) {
 
+		User principal = userDetailService.getPrincipal();
+		
 		String ecodePassword = passwordEncoder.encode(password);
 		int result = userRepository.update(id, ecodePassword, profile);
 

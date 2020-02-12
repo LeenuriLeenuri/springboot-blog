@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -17,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,20 +74,7 @@ public class UserController {
 		System.out.println(TAG + dto.getUsername());
 		System.out.println(TAG + dto.getPassword());
 		System.out.println(TAG + dto.getEmail());
-
-		// 한글 뱉어내기(한글 입력 방지, dto.getUsername())
-
-		if (bindingResult.hasErrors()) {
-			Map<String, String> errorMap = new HashMap<>();
-
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				errorMap.put(error.getField(), error.getDefaultMessage());
-			}
-
-			return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
-		}
-
-		System.out.println("1");
+		
 		int result = userService.회원가입(dto);
 
 		if (result == -ReturnCode.아이디중복) {
@@ -128,8 +112,7 @@ public class UserController {
 	public @ResponseBody String profile(
 			@RequestParam int id, 
 			@RequestParam String password,
-			@RequestParam MultipartFile profile,
-			@AuthenticationPrincipal User principal){
+			@RequestParam MultipartFile profile){
 		
 		UUID uuid = UUID.randomUUID();
 		String uuidFilename = uuid+"_"+profile.getOriginalFilename();
@@ -142,7 +125,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		
-		int result = userService.수정완료(id, password, uuidFilename, principal);
+		int result = userService.수정완료(id, password, uuidFilename);
 		
 		StringBuffer sb = new StringBuffer();
 		if(result == 1) {
